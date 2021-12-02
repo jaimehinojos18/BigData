@@ -1,0 +1,62 @@
+1. Write a Scala program to compute the sum of the two given integer values. If the two values are the same, then return triples their sum. 
+
+def cal(a:Int, b:Int){
+     | if(a==b){
+     | println((a+b)*3)
+     | }
+     | else{
+     | println(a+b)
+     | }
+     | }
+
+
+2. Write a Scala program to create a new string with the last char added at the front and back of a given string of length 1 or more
+def str(s:String){
+	if(s.length()<=1){
+	println("String not long enough");
+	}else{
+	var r = s.takeRight(1);
+	var res = s.substring(0, s.length()-1);
+	r = r + res;
+	println(r);
+	}
+}
+	
+
+
+3. Write a Scala program to get the absolute difference between n and 51. If n is greater than 51 return triple the absolute difference.
+
+def str(i:Int, b:Int):Int={
+	var absolute = i-b;
+	absolute = absolute.abs;
+	if(absolute >= 51){
+		return absolute*3
+	}else{
+		return absolute
+	}
+}
+	
+
+
+4. Write a Scala program to check two given integers, and return true if one of them is 30 or if their sum is 30.
+
+
+def str(i:Int, b:Int):Boolean={
+	
+	if(i==30 || b==30){
+		true;
+	}else if(i+b == 30){
+		true;
+	}else{
+		false;
+	}
+}
+
+
+
+5. Write a Scala program to check a given integer and return true if it is within 20 of 100 or 300.
+
+
+6. Write a Scala program to create a new string where 'if' is added to the front of a given string. If the string already begins with 'if', return the string unchanged
+7. Write a Scala program to remove the character in a given position of a given string.The given position will be in the range 0...string length -1 inclusive. 
+8. Write a Scala program to exchange the first and last characters in a given string and return the new string. 

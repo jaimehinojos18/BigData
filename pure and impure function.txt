@@ -1,0 +1,17 @@
+
+
+def powerOf(i:Int, p:Int):Int = p match {
+		case 0 => 1
+		case _ => i*(powerOf(i, p-1))
+	} 
+
+val num = powerOf(3,4)
+print(num)
+
+var name="James"
+println("Before: "+name)
+def changeName(){
+	print("Change to?")
+	name = readLine()
+	print(s"\nAfter: $name")
+}
