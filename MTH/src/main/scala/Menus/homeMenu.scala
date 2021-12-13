@@ -63,7 +63,8 @@ object homeMenu {
         while(jump!=true){
           input = StdIn.readLine()
           if(input.equals("1")){
-            println("print statement")
+            println("\n\nprint statement")
+            connection.print_statement(account_selected(0).toLong)
             jump = true
 
           }
@@ -86,7 +87,7 @@ object homeMenu {
         }
         Thread.sleep(4000)
       }else{
-        println("Back to main menu")
+        println("\nBack to main menu")
       }
 
 
@@ -131,13 +132,70 @@ object homeMenu {
 
       }
       else{
-        println("Back to main menu")
+        println("\nBack to main menu")
       }
       print("\n\nMTH Bank \n1. Open an Account \n2. Manage Accounts\n3. Deposit\n4. Send/Transfer Money\n0. Sign Out" +
       "\nPlease select an option: ")
       1
     }
-    case 4 => {print("\n\nMTH Bank \n1. Open an Account \n2. Manage Accounts\n3. Deposit\n4. Send/Transfer Money\n0. Sign Out" +
+    case 4 => {
+      val accounts = connection.getAccounts(id)
+      if(accounts != null){
+        var count = 1
+        println("\n\nAccounts Available: ")
+        for( x <- accounts ){
+          print(s"$count. ${x(0)} ${x(1)} Account"+"\n")
+          count+=1
+        }
+        print("Please select an account: ")
+        var jump = false
+        var input = ""
+        var account_selected:Array[String] = Array()
+        while(jump != true){
+          try{
+            input = StdIn.readLine()
+            account_selected = accounts(input.toInt-1)
+            jump = true
+          }catch{
+            case e:Exception=> println("Wrong Input")
+          }
+        }
+        jump = false
+        var transfer:Long = 0
+        while(jump!=true){
+          try{
+            print("Enter account number you would like to transfer to: ")
+            input = StdIn.readLine()
+            transfer = input.toLong
+            jump = true
+          }catch {
+            case e:Exception => println("Wrong input.")
+          }
+        }
+
+        jump = false
+        while(jump!= true){
+          try{
+            print("Amount to Deposit: $")
+            input = StdIn.readLine()
+            connection.transfer(account_selected(0).toLong, transfer ,input.toDouble)
+            jump = true
+          }catch{
+            case e:Exception=> println("Error Ocurred")
+          }
+        }
+
+      }
+      else{
+        println("\nBack to main menu")
+      }
+
+
+
+
+
+
+      print("\n\nMTH Bank \n1. Open an Account \n2. Manage Accounts\n3. Deposit\n4. Send/Transfer Money\n0. Sign Out" +
       "\nPlease select an option: ")
       1
     }

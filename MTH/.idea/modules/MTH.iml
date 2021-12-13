@@ -14,6 +14,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="sbt: antlr:antlr:2.7.7:jar" level="project" />
     <orderEntry type="library" name="sbt: aopalliance:aopalliance:1.0:jar" level="project" />
+    <orderEntry type="library" name="sbt: au.com.bytecode:opencsv:2.4:jar" level="project" />
     <orderEntry type="library" name="sbt: com.carrotsearch:hppc:0.7.2:jar" level="project" />
     <orderEntry type="library" name="sbt: com.clearspring.analytics:stream:2.7.0:jar" level="project" />
     <orderEntry type="library" name="sbt: com.esotericsoftware:kryo-shaded:4.0.2:jar" level="project" />
