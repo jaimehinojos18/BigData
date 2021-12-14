@@ -166,8 +166,12 @@ object homeMenu {
           try{
             print("Enter account number you would like to transfer to: ")
             input = StdIn.readLine()
-            transfer = input.toLong
-            jump = true
+            if(input.equals(account_selected(0))){
+              println("You entered the same account, please try again.")
+            }else{
+              transfer = input.toLong
+              jump = true
+            }
           }catch {
             case e:Exception => println("Wrong input.")
           }

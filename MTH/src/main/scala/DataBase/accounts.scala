@@ -40,7 +40,7 @@ object accounts {
             s"\nAccount Type: ${resultSet.getString(2)}" +
             s"\nAccount Balance: ${resultSet.getString(4)}")
         }
-        var resultSet2 = statement.executeQuery(s"SELECT * FROM transactions WHERE account_id = '$id' ORDER BY transaction_date DESC;")
+        var resultSet2 = statement.executeQuery(s"SELECT * FROM transactions WHERE account_id = '$id' OR receiving_account='$id' ORDER BY transaction_date DESC;")
         if(!resultSet2.isBeforeFirst()){
           println("You don't have any transactions")
 
@@ -178,7 +178,7 @@ object accounts {
       while ( resultSet.next() ) {
         account = Array[String](resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4))
       }
-      var resultSet2 = statement.executeQuery(s"SELECT * FROM transactions WHERE account_id = '$id' ORDER BY transaction_date DESC;")
+      var resultSet2 = statement.executeQuery(s"SELECT * FROM transactions WHERE account_id = '$id' OR receiving_account='$id' ORDER BY transaction_date DESC;")
       if(!resultSet2.isBeforeFirst()){
         transactions += Array(" ")
 
