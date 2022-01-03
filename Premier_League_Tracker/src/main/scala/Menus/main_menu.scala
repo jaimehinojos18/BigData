@@ -2,7 +2,50 @@ package Menus
 import Database.spark_connect
 import scala.io.StdIn.readLine
 object main_menu {
-  def admin(): Unit ={
+  def admin(i:Int, u_id:Int, sp:spark_connect.type): Unit = i match{
+    case 1=>{
+      println("Admin Username:")
+      val user = readLine()
+      println("\nAdmin Password:")
+      val pass = readLine()
+      if(user.equals("") || user == null || pass.equals("") || pass ==null){
+        println("Nothing was entered")
+      }else{
+        sp.create_admin(user, pass)
+      }
+      admin(0, u_id, sp)
+    }
+    case 2=> {
+      sp.drop()
+      sp.initiate()
+      admin(0, u_id, sp)
+    }
+    case 3 =>{
+      sp.show_admins()
+      println("Enter admin ID:")
+      val input = readLine()
+      try{
+        if(input.toInt == u_id){
+          println("You can't delete yourself")
+        }else {
+          sp.delete_account(input.toInt)
+        }
+      }catch {
+        case e:Exception => {
+          println("Error")
+        }
+      }
+      admin(0, u_id, sp)
+
+    }
+    case _ =>{
+      println("\n____________________________________________________________________\nPL Tracker Admin Main Menu:\n" +
+        "1. Add new admin\n" +
+        "2. Drop Tables and Reload Tables\n" +
+        "3. Remove admin\n" +
+        "q. Sign out\n" +
+        "What would you like to do? ")
+    }
 
   }
   def user(i:Int, team_id:Int, sp:spark_connect.type ): Unit = i match {
@@ -82,7 +125,7 @@ object main_menu {
       print("Enter New Username:")
       val user = readLine()
       if(user.equals("") || user == null){
-        "Nothing was entered"
+        println("Nothing was entered")
       }else{
         sp.change_username(u_id, user)
       }

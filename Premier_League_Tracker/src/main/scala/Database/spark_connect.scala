@@ -2,6 +2,7 @@ package Database
 import org.apache.spark.sql.SparkSession
 import User.Customer
 import API.API
+import scala.util.Random
 
 import java.io.FileNotFoundException
 object spark_connect {
@@ -18,6 +19,7 @@ object spark_connect {
     //val api = API
     //api.get("https://api-football-v1.p.rapidapi.com/v3/standings?season=2021&league=39", "PLTable")
     //api.get("https://api-football-v1.p.rapidapi.com/v3/players?league=39&season=2021", "PLPlayers")
+    //insert_player()
 
     spark.sql("create table IF NOT EXISTS users (id int, username string, password string, firstName string, lastName string, team_id int, type string) row format delimited fields terminated by ','")
     spark.sql("drop table if exists PL_Table")
@@ -67,6 +69,24 @@ object spark_connect {
 
 
   }
+  def create_admin(username:String, pass:String): Unit ={
+    try{
+      val code= (100000 + Random.nextInt(900000))
+      var response = spark.sql(s"SELECT * FROM users WHERE username = '$username'").collect()
+      if(response.length == 0){
+        spark.sql(s"INSERT INTO users VALUES('$code', '$username', '$pass','$username', '', '-1', 'admin')")
+        println("Account successfully created")
+      }else{
+        println("username already exists")
+      }
+    }catch{
+      case e: Exception => print("Error")
+    }
+
+  }
+  def show_admins(): Unit ={
+    spark.sql("SELECT * FROM users WHERE type='admin'").show()
+  }
   def create_account(id:Int, firstName:String, lastName:String, username:String, pass:String) = {
     try{
       var response = spark.sql(s"SELECT * FROM users WHERE username = '$username'").collect()
@@ -114,7 +134,8 @@ object spark_connect {
 
   }
   def drop(): Unit ={
-    spark.sql("drop table if exists users")
+    spark.sql("drop table if exists PL_Table")
+    spark.sql("drop table if exists Players")
   }
   def change_team(id:Int , u_id:Int): Boolean ={
     try{
@@ -271,7 +292,14 @@ object spark_connect {
 
   }
   def delete_account(id:Int): Unit ={
-    spark.sql(s"INSERT OVERWRITE TABLE users SELECT * FROM users WHERE id!='$id'")
+    try{
+      spark.sql(s"INSERT OVERWRITE TABLE users SELECT * FROM users WHERE id!='$id'")
+    }catch {
+      case e:Exception => {
+        println("Error")
+      }
+    }
+
   }
 
 }
