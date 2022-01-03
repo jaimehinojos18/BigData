@@ -126,7 +126,6 @@ object spark_connect {
           spark.sql(s"INSERT INTO users VALUES('${row.get(0).toString}', '${row.get(1).toString}','${row.get(2).toString}', '${row.get(3).toString}', '${row.get(4).toString}', '$id', '${row.get(6).toString}')")
 
         })
-        spark.sql("SELECT * FROM users").show()
         true
       }else{
         false
@@ -136,15 +135,6 @@ object spark_connect {
         false}
     }
 
-
-    /*
-    spark.sql("INSERT INTO users VALUES('789706', 'jahinojos2','pss1119', 'Jaime', 'Hinojos', '-1', 'user')")
-    spark.sql("SELECT * FROM users").show()
-
-    spark.sql("INSERT INTO users VALUES('789706', 'jahinojos2','pss1119', 'Jaime', 'Hinojos', '19', 'user')")
-    spark.sql("SELECT * FROM users").show()
-
-     */
   }
   def get_teams(): Unit = {
     val response = spark.sql("SELECT id, team from PL_Table").collect()
@@ -159,6 +149,129 @@ object spark_connect {
     val teams = spark.sql("SELECT id FROM PL_Table").collect()
     teams.foreach(x => API.getPlayers(x.get(0).toString.toInt))
   }
+  def get_stats(id:Int): Unit ={
+    val stats = spark.sql(s"SELECT team, rank, played, win, draw, loss, ROUND(win/played*100, 2) as win_p, goalsFor, goalsAgainst," +
+      s" ROUND(goalsFor/played, 2) as goals_p, ROUND(goalsAgainst/played, 2) as goals_a, home_played, home_win, home_draw, home_loss, " +
+      s" ROUND(home_win/home_played*100, 2) as h_win, hg_for, hg_against, ROUND(hg_for/home_played, 2) as goals_hf, ROUND(hg_against/home_played, 2) as goals_ha," +
+      s"away_played, away_win, away_draw, away_loss, " +
+      s" ROUND(away_win/home_played*100, 2) as a_win, ag_for, ag_against, ROUND(ag_for/home_played, 2) as goals_hf, ROUND(ag_against/home_played, 2) as goals_ha, points  FROM PL_Table WHERE id='$id'").collect()
+    stats.foreach(x => {
+      println("Team Name: "+x.get(0))
+      println("League Table Position: "+x.get(1))
+      println("\nGames Statistics")
+      println("Games Played: "+x.get(2))
+      println("Wins: "+x.get(3))
+      println("Draws: "+x.get(4))
+      println("Loss: "+x.get(5))
+      println("Win Percentage: "+x.get(6)+"%")
+      println("Goals Scored: "+x.get(7))
+      println("Goals Conceded: "+x.get(8))
+      println("Goals Scored Per Game: "+x.get(9))
+      println("Goals Conceded Per Game: "+x.get(10))
+      println("\nHome Games Statistics")
+      println("Games Played: "+x.get(11))
+      println("Wins: "+x.get(12))
+      println("Draws: "+x.get(13))
+      println("Loss: "+x.get(14))
+      println("Win Percentage: "+x.get(15)+"%")
+      println("Goals Scored: "+x.get(16))
+      println("Goals Conceded: "+x.get(17))
+      println("Goals Scored Per Game: "+x.get(18))
+      println("Goals Conceded Per Game: "+x.get(19))
+      println("\nAway Games Statistics")
+      println("Games Played: "+x.get(20))
+      println("Wins: "+x.get(21))
+      println("Draws: "+x.get(22))
+      println("Loss: "+x.get(23))
+      println("Win Percentage: "+x.get(24)+"%")
+      println("Goals Scored: "+x.get(25))
+      println("Goals Conceded: "+x.get(26))
+      println("Goals Scored Per Game: "+x.get(27))
+      println("Goals Conceded Per Game: "+x.get(28))
 
+
+    })
+
+  }
+  def get_team_players(id:Int): Unit ={
+    val response = spark.sql(s"SELECT id, team from PL_Table where id ='$id'").collect()
+    response.foreach(x => println("\n"+x.get(1)+" Players:"))
+    println("\nDefenders: ")
+    spark.sql(s"SELECT name as Name, nationality as Nationality, played as `Games Played`, minutes as `Minutes Played`," +
+      s"shots as `Total Shots`, goals as Goals, ROUND(goals/shots*100, 2) as `Conversion Rate`, assists as Assists, passes as `Passes Made`, " +
+      s"key_passes as `Key Passes`, accuracy as `Pass Accuracy`, y_cards as `Yellow Cards`, r_cards as `Red Cards` FROM Players WHERE id='$id' AND position LIKE '%Defender%' ORDER BY minutes DESC").show()
+    println("Midfielders: ")
+    spark.sql(s"SELECT name as Name, nationality as Nationality, played as `Games Played`, minutes as `Minutes Played`," +
+      s"shots as `Total Shots`, goals as Goals, ROUND(goals/shots*100, 2) as `Conversion Rate`, assists as Assists, passes as `Passes Made`, " +
+      s"key_passes as `Key Passes`, accuracy as `Pass Accuracy`, y_cards as `Yellow Cards`, r_cards as `Red Cards` FROM Players WHERE id='$id' AND position LIKE '%Midfielder%' ORDER BY minutes DESC").show()
+
+    println("Attackers: ")
+     spark.sql(s"SELECT name as Name, nationality as Nationality, played as `Games Played`, minutes as `Minutes Played`," +
+      s"shots as `Total Shots`, goals as Goals, ROUND(goals/shots*100, 2) as `Conversion Rate`, assists as Assists, passes as `Passes Made`, " +
+      s"key_passes as `Key Passes`, accuracy as `Pass Accuracy`, y_cards as `Yellow Cards`, r_cards as `Red Cards` FROM Players WHERE id='$id' AND position LIKE '%Attacker%' ORDER BY minutes DESC").show()
+    println("Goalkeepers: ")
+    spark.sql(s"SELECT name as Name, nationality as Nationality, played as `Games Played`, minutes as `Minutes Played`," +
+      s"shots as `Total Shots`, goals as Goals, ROUND(goals/shots*100, 2) as `Conversion Rate`, assists as Assists, passes as `Passes Made`, " +
+      s"key_passes as `Key Passes`, accuracy as `Pass Accuracy`, y_cards as `Yellow Cards`, r_cards as `Red Cards`  FROM Players WHERE id='$id' AND position LIKE '%Goalkeeper%'  ORDER BY minutes DESC").show()
+
+
+
+
+  }
+  def champions_league(): Unit ={
+    println("Qualified for Champions League")
+    spark.sql("SELECT rank as `League Table Position`, team as `Team Name`, points as `Total Points` FROM PL_Table WHERE rank < 5 ORDER BY RANK ").show()
+    println("Qualified for Europa League")
+    spark.sql("SELECT rank as `League Table Position`, team as `Team Name`, points as `Total Points` FROM PL_Table WHERE rank > 4 AND rank < 7 ORDER BY RANK ").show()
+    println("Qualified for Europa Conference League")
+    spark.sql("SELECT rank as `League Table Position`, team as `Team Name`, points as `Total Points` FROM PL_Table WHERE rank = 7 ORDER BY RANK ").show()
+  }
+  def relegation_zone(): Unit ={
+    spark.sql("SELECT rank as `League Table Position`, team as `Team Name`, points as `Total Points` FROM PL_Table where rank > 17 ORDER BY RANK  ").show()
+  }
+  def change_password(id:Int, pass:String, npass:String): Unit={
+    try{
+      var response = spark.sql(s"SELECT * FROM users WHERE id = '$id' AND password ='$pass'").collect()
+      if(response.length == 1){
+        spark.sql(s"INSERT OVERWRITE TABLE users SELECT * FROM users WHERE id!='$id'")
+        response.foreach(row=>{
+          spark.sql(s"INSERT INTO users VALUES('${row.get(0).toString}', '${row.get(1).toString}','${npass}', '${row.get(3).toString}', '${row.get(4).toString}', '${row.get(5).toString}', '${row.get(6).toString}')")
+
+        })
+
+        println("Account successfully updated")
+      }else{
+
+        println("User not found")
+
+      }
+    }catch{
+      case e: Exception => print("Error")
+    }
+  }
+  def change_username(id:Int, u:String): Unit ={
+    try{
+      var response = spark.sql(s"SELECT * FROM users WHERE username ='$u'").collect()
+      var user = spark.sql(s"SELECT * FROM users WHERE id='$id'").collect()
+      if(response.length == 0){
+        spark.sql(s"INSERT OVERWRITE TABLE users SELECT * FROM users WHERE id!='$id'")
+        user.foreach(row =>{
+          spark.sql(s"INSERT INTO users VALUES('${row.get(0).toString}', '${u}','${row.get(2).toString}', '${row.get(3).toString}', '${row.get(4).toString}', '${row.get(5).toString}', '${row.get(6).toString}')")
+
+        })
+
+        println("Account successfully updated")
+
+      }else{
+        println("Username already exists")
+      }
+    }catch{
+      case e:Exception => print("Error")
+    }
+
+  }
+  def delete_account(id:Int): Unit ={
+    spark.sql(s"INSERT OVERWRITE TABLE users SELECT * FROM users WHERE id!='$id'")
+  }
 
 }
