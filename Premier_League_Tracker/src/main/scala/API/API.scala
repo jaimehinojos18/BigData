@@ -70,7 +70,7 @@ object API {
         val json_data = ujson.read(body.toString)
         val players = json_data("response")
         val len = players.arr.size
-        print(len)
+
         println(json_data)
         for(i <- 0 to len-1){
           var s = s"${players(i)("player")("id")},${players(i)("player")("name")}," +
@@ -82,7 +82,6 @@ object API {
             s"${players(i)("statistics")(0)("passes")("accuracy")},${players(i)("statistics")(0)("cards")("yellow")}," +
             s"${players(i)("statistics")(0)("cards")("red")},$id\n"
           s = s.replaceAll("null", "0")
-          print(s)
           pw.write(s)
         }
         pw.close()

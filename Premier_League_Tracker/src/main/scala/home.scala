@@ -18,15 +18,14 @@ object home {
     //spark.drop()
 
     //spark.change_team()
-    println("created spark session")
-    println("Welcome to")
+    println("\n\n\n\n\n\nWelcome to")
     println("|||||||||     ||               |||||||||||||   ||||||||||          ||        ||||||||  ||    ||  ||||||  ||||||||||  " )
     println("||     ||     ||                    |||        ||       ||        ||||       ||        ||   ||   ||      ||       || ")
     println("||     ||     ||                    |||        ||       ||       ||  ||      ||        ||  ||    ||      ||       || ")
     println("|||||||||     ||                    |||        ||||||||||       ||||||||     ||        ||||      ||||    ||||||||||  ")
     println("||            ||                    |||        ||   |||        ||      ||    ||        ||  ||    ||      ||   |||    ")
     println("||            ||                    |||        ||     |||     ||        ||   ||        ||   ||   ||      ||    |||   ")
-    println("||            ||||||||||||          |||        ||      |||   ||          ||  ||||||||  ||    ||  ||||||  ||     |||  ")
+    println("||            ||||||||||||          |||        ||      |||   ||          ||  ||||||||  ||    ||  ||||||  ||     |||  \n\n\n\n")
     val sI = sign_in
     var si_in:Customer = sI.signInMenu(0, spark)
     while(si_in == null){

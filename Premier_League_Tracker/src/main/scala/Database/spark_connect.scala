@@ -2,10 +2,14 @@ package Database
 import org.apache.spark.sql.SparkSession
 import User.Customer
 import API.API
-import scala.util.Random
+import org.apache.log4j.{Level, Logger}
 
+import scala.util.Random
 import java.io.FileNotFoundException
 object spark_connect {
+  Logger.getLogger("org.apache.spark").setLevel(Level.ERROR)
+  Logger.getLogger("org.spark-project").setLevel(Level.ERROR)
+  Logger.getLogger("org").setLevel(Level.ERROR)
   System.setProperty("hadoop.home.dir", "C:/hadoop")
   val spark = SparkSession
     .builder
@@ -18,7 +22,6 @@ object spark_connect {
   def initiate(): Unit = {
     //val api = API
     //api.get("https://api-football-v1.p.rapidapi.com/v3/standings?season=2021&league=39", "PLTable")
-    //api.get("https://api-football-v1.p.rapidapi.com/v3/players?league=39&season=2021", "PLPlayers")
     //insert_player()
 
     spark.sql("create table IF NOT EXISTS users (id int, username string, password string, firstName string, lastName string, team_id int, type string) row format delimited fields terminated by ','")
